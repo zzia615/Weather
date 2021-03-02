@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>天气查询</title>
+		<link rel="stylesheet" type="text/css" href="https://cdn.bootcdn.net/ajax/libs/layui/2.5.7/css/layui.css"/>
+		<script src="https://cdn.bootcdn.net/ajax/libs/layui/2.5.7/layui.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.9/vue.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.11.0/axios.min.js"></script>
+	</head>
+	<body style="background: #efefef;">
+		<div id="app">
+			<div class="layui-card" style="padding: 20px;">
+				<div class="layui-form" style="margin: 10px auto;width: 400px;">
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label" style="width: 30px;">城市</label>
+							<div class="layui-input-inline">
+								<input type="text" v-model="inputWeather" @keyup.enter="getWeather(inputWeather)" class="layui-input" style="width: 200px;">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<button @click="getWeather(inputWeather)" class="layui-btn">查询</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-row">
+				<div class="layui-col-md3" v-for="item in weatherList" >
+					<div class="layui-card" style="margin: 20px;">
+						
+						<div class="layui-card-header">
+							<h2>{{ item.date }}</h2>
+						</div>
+						<div class="layui-card-body">
+							<h3>{{ item.type }}</h3>
+							<h4>{{ item.low }} - {{ item.high }}</h4>	
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var vue = new Vue({
+				el:"#app",
+				data:{
+					inputWeather:"杭州",
+					weatherList:[]
+				},
+				methods:{
+					getWeather:function(p1){
+						var that = this;
+						var url = "http://wthrcdn.etouch.cn/weather_mini?city="+p1;
+						axios.get(url).then(response=>{
+							console.log(response.data);
+							that.weatherList=response.data.data.forecast;
+						}).catch(error=>console.log(err));
+						console.log(p1)
+					}
+				}
+			})
+		</script>
+	</body>
+</html>
